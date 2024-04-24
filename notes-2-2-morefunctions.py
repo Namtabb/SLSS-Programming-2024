@@ -32,3 +32,12 @@ def stars(num):
 
 print(stars(2))
 
+
+def pyramid(base_width: int):
+
+    for i in range(base_width):
+        print("x" * (i + 1))
+
+pyramid(1)
+pyramid(5)
+
