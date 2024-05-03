@@ -3,7 +3,6 @@
 # Jason K
 # March 4
 
-# import random to access the library to use randint
 import random
 
 # creating a function to convert string to int

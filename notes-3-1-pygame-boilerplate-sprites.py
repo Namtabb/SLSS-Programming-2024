@@ -1,45 +1,54 @@
+# Intro to Pygame
+#    - boilerplate
+#    - Sprite class
 
-
+import random
 import pygame
 
-WIDTH   = 1280    # Pixels
-HEIGHT  =  720
+WIDTH = 1280  # Pixels
+HEIGHT = 760
 SCREEN_SIZE = (WIDTH, HEIGHT)
-class Dvdlogo(pygame.sprite.Sprite):
-    def __init__(self):
 
+
+class Dvdlogo(pygame.sprite.Sprite):
+    """Represents the DVD Logo"""
+
+    def __init__(self):
         super().__init__()
+
         self.image = pygame.image.load("./Images/dvd-logo.png")
 
+        # sets the x and y to 0
+        #    first position of the image is in the top right
         self.rect = self.image.get_rect()
 
-        self.rect.centerx = WIDTH
-        self.rect.centery = HEIGHT
+        self.rect.x = random.randrange(0, WIDTH - self.rect.width)
+        self.rect.y = random.randrange(0, HEIGHT - self.rect.height)
 
-        self.vel_x = 3
-        self.vel_y = 3
+        # How much position changes over time
+        #    - pixels per tick
+        self.vel_x = random.choice([-6, -5, -4, -3, 3, 4, 5, 6])
+        self.vel_y = random.choice([-6, -5, -4, -3, 3, 4, 5, 6])
+
     def update(self):
-        # Update position of dvdlogo
+        # Update position of Dvdlogo
         self.rect.x += self.vel_x
         self.rect.y += self.vel_y
 
-        #keep dvdlogo in the school
-        # right side of the screen
-        #   - if the right edge of dvdlogo > WIDTH
-        #       -switch the direction (+vel-x -> -vel-x)
+        # Keep the Dvdlogo in the screen
+        # Right side of the screen
+        #     - if the right edge of dvdlogo > WIDTH
+        #          - switch the direction (+vel-x -> -vel-x)
         if self.rect.right >= WIDTH:
             self.vel_x = -self.vel_x
-        # Left side
         if self.rect.left <= 0:
             self.vel_x = -self.vel_x
-        # Top side
         if self.rect.bottom >= HEIGHT:
             self.vel_y = -self.vel_y
-        # Bottom side
         if self.rect.top <= 0:
             self.vel_y = -self.vel_y
 
-        print(self.rect.x, self.rect.y)
+
 def start():
     """Environment Setup and Game Loop"""
 
@@ -47,28 +56,22 @@ def start():
 
     # --CONSTANTS--
     # COLOURS
-    WHITE   = (255, 255, 255)
-    BLACK   = (  0,   0,   0)
-    EMERALD = ( 21, 219, 147)
-    RED     = (255,   0,   0)
-    GREEN   = (  0, 255,   0)
-    BLUE    = (  0,   0, 255)
-    GRAY    = (128, 128, 128)
-
-    
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    EMERALD = (21, 219, 147)
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    BLUE = (0, 0, 255)
+    GRAY = (128, 128, 128)
 
     # --VARIABLES--
     screen = pygame.display.set_mode(SCREEN_SIZE)
     done = False
     clock = pygame.time.Clock()
 
-    dvdlogo = Dvdlogo()
-
-    dvdlogo.rect.centerx = WIDTH // 2
-    dvdlogo.rect.centery = HEIGHT // 2
-
     all_sprites = pygame.sprite.Group()
-    all_sprites.add(dvdlogo)
+
+    all_sprites.add(Dvdlogo())
 
     pygame.display.set_caption("DVD Screen Saver")
 
@@ -78,10 +81,13 @@ def start():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
+            # Listen for the keyboard space bar to be pressed
+            # spawn a new dvdlogo object
+            if event.type == pygame.KEYDOWN:
+                if pygame.key.get_pressed()[pygame.K_SPACE]:
+                    all_sprites.add(Dvdlogo())
 
-        
-
-        #--- Update the world state
+        # --- Update the world state
         all_sprites.update()
 
         # --- Draw items
@@ -89,16 +95,16 @@ def start():
 
         all_sprites.draw(screen)
 
-      
         # Update the screen with anything new
         pygame.display.flip()
 
         # --- Tick the Clock
-        clock.tick(60)    # 60 fps
+        clock.tick(60)  # 60 fps
 
 
 def main():
     start()
+
 
 if __name__ == "__main__":
     main()
